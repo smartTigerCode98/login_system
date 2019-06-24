@@ -8,14 +8,15 @@ namespace App.Services
     public class SignService
     {
         private readonly IUserRepository _userRepository;
-        private readonly EmailValidator _emailValidator;
-        private readonly PasswordValidator _passwordValidator;
+        private readonly IDataValidator<string> _emailValidator;
+        private readonly IDataValidator<string> _passwordValidator;
 
-        public SignService(IUserRepository userRepository)
+        public SignService(IUserRepository userRepository, IDataValidator<string> emailValidator, 
+            IDataValidator<string> passwordValidator)
         {
             _userRepository = userRepository;
-            _emailValidator = new EmailValidator();
-            _passwordValidator = new PasswordValidator();
+            _emailValidator = emailValidator;
+            _passwordValidator = passwordValidator;
         }
 
         public bool Login(string email, string password)
