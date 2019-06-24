@@ -2,6 +2,7 @@ using System;
 using App.Exceptions;
 using App.Interfaces;
 using App.Services;
+using App.Validators;
 using App.Views;
 
 namespace App.Controllers
@@ -10,11 +11,11 @@ namespace App.Controllers
     {
         private readonly SignService _signService;
 
-        private View _view;
+        private readonly View _view;
 
         public LoginController(IUserRepository userRepository)
         {
-            _signService = new SignService(userRepository);
+            _signService = new SignService(userRepository, new EmailValidator(), new PasswordValidator());
             
             _view = new View();
             
@@ -48,7 +49,7 @@ namespace App.Controllers
                     allIsOk = _signService.Login(email, password);
                     if (allIsOk)
                     {
-                        _view.Msg = $"{email} are you welcome!";
+                        _view.Msg = $"{email} welcome!";
                     }
                 }
                 catch (InvalidEmailException e)
@@ -69,7 +70,7 @@ namespace App.Controllers
                 }
                 catch (NotPasswordMatchException e)
                 {
-                    _view.Msg = e.Message;;
+                    _view.Msg = e.Message;
                     passIsInputted = false;
                 }   
                 
