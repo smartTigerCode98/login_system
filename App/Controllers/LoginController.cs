@@ -10,12 +10,20 @@ namespace App.Controllers
 
         private readonly IView _view;
 
+        private bool _emailIsInputted;
+        private bool _passIsInputted;
+        private string _email;
+        private string _password;
+
         public LoginController(ILoginService loginService, IView view)
         {
             _signService = loginService;
             _view = view;
+            _emailIsInputted = false;
+            _passIsInputted = false;
+            _email = "";
+            _password = "";
         }
-        
         
         private static string InputNecessaryField(string fieldName)
         {
@@ -24,55 +32,67 @@ namespace App.Controllers
             return value;
         }
 
+        private void InputEmail()
+        {
+            if (_emailIsInputted) return;
+            _email = InputNecessaryField("email");
+            _emailIsInputted = true;
+        }
+
+        private void InputPassword()
+        {
+            if (_passIsInputted) return;
+            _password = InputNecessaryField("password");
+            _passIsInputted = true;
+        }
+
+        private void SetStatusInputtedFields(bool emailStatus, bool passStatus)
+        {
+            _emailIsInputted = emailStatus;
+            _passIsInputted = passStatus;
+        }
+
+        private void SaveExceptionMessage(Exception e)
+        {
+            _view.Msg = e.Message;
+        }
+
+        private void HandleException(Exception e, bool emailStatus, bool passStatus)
+        {
+            SaveExceptionMessage(e);
+            SetStatusInputtedFields(emailStatus, passStatus);
+        }
+
         public void Run()
         {
-            var allIsOk = false;
-            var emailIsInputted = false;
-            var passIsInputted = false;
-            var email = "";
-            var password = "";
-
-            while (!allIsOk)
+            while (true)
             {
-                if (!emailIsInputted)
-                {
-                    email = InputNecessaryField("email");
-                    emailIsInputted = true;
-                }
-
-                if (!passIsInputted)
-                {
-                    password = InputNecessaryField("password");
-                    passIsInputted = true;
-                }
+                InputEmail();
+                InputPassword();
+                
                 try
-                {
-                    allIsOk = _signService.Login(email, password);
-                    if (allIsOk)
+                { 
+                    if (_signService.Login(_email, _password))
                     {
-                        _view.Msg = $"{email} welcome!";
+                        _view.Msg = $"{_email} welcome!";
+                        break;
                     }
                 }
                 catch (InvalidEmailException e)
                 {
-                    _view.Msg = e.Message;
-                    emailIsInputted = false;
+                    HandleException(e, false, _passIsInputted);
                 }
                 catch (InvalidPasswordException e)
                 {
-                    _view.Msg = e.Message;
-                    passIsInputted = false;
+                    HandleException(e, _emailIsInputted, false);
                 }
                 catch (UserNotFoundException e)
                 {
-                    _view.Msg = e.Message;
-                    emailIsInputted = false;
-                    passIsInputted = false;
+                    HandleException(e, false, false);
                 }
                 catch (NotPasswordMatchException e)
                 {
-                    _view.Msg = e.Message;
-                    passIsInputted = false;
+                    HandleException(e, _emailIsInputted, false);
                 }   
                 
                 _view.Display();
