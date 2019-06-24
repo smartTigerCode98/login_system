@@ -19,7 +19,7 @@ namespace App.Repositories
         }
         public User FindUser(string email)
         {
-            return _users.First(u => u.Email.Equals(email));
+            return _users.FirstOrDefault(u => u.Email.Equals(email));
         }
     }
 }

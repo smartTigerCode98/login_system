@@ -1,18 +1,17 @@
-using System;
+
 using App.Exceptions;
 using App.Interfaces;
-using App.Validators;
 
 namespace App.Services
 {
-    public class SignService
+    public class SignService : ILoginService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IDataValidator<string> _emailValidator;
-        private readonly IDataValidator<string> _passwordValidator;
+        private readonly IEmailValidator _emailValidator;
+        private readonly IPasswordValidator _passwordValidator;
 
-        public SignService(IUserRepository userRepository, IDataValidator<string> emailValidator, 
-            IDataValidator<string> passwordValidator)
+        public SignService(IUserRepository userRepository, IEmailValidator emailValidator, 
+            IPasswordValidator passwordValidator)
         {
             _userRepository = userRepository;
             _emailValidator = emailValidator;

@@ -3,7 +3,7 @@ using App.Interfaces;
 
 namespace App.Validators
 {
-    public class EmailValidator : IDataValidator<string>
+    public class EmailValidator : IEmailValidator
     {
         public bool Validate(string data)
         {

@@ -1,24 +1,27 @@
 using System;
 using App.Exceptions;
 using App.Interfaces;
-using App.Services;
-using App.Validators;
-using App.Views;
 
 namespace App.Controllers
 {
     public class LoginController
     {
-        private readonly SignService _signService;
+        private readonly ILoginService _signService;
 
-        private readonly View _view;
+        private readonly IView _view;
 
-        public LoginController(IUserRepository userRepository)
+        public LoginController(ILoginService loginService, IView view)
         {
-            _signService = new SignService(userRepository, new EmailValidator(), new PasswordValidator());
-            
-            _view = new View();
-            
+            _signService = loginService;
+            _view = view;
+        }
+        
+        
+        private static string InputNecessaryField(string fieldName)
+        {
+            Console.WriteLine("Input your " + fieldName);
+            var value = Console.ReadLine();
+            return value;
         }
 
         public void Run()
@@ -33,15 +36,13 @@ namespace App.Controllers
             {
                 if (!emailIsInputted)
                 {
-                    Console.WriteLine("Input your email");
-                    email = Console.ReadLine();
+                    email = InputNecessaryField("email");
                     emailIsInputted = true;
                 }
 
                 if (!passIsInputted)
                 {
-                    Console.WriteLine("Input your password");
-                    password = Console.ReadLine();
+                    password = InputNecessaryField("password");
                     passIsInputted = true;
                 }
                 try

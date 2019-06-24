@@ -1,10 +1,11 @@
 using System;
+using App.Interfaces;
 
 namespace App.Views
 {
-    public class View
+    public class View : IView
     {
-        public string Msg { private get; set; }
+        public string Msg { get; set; }
 
         public void Display()
         {

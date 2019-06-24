@@ -3,7 +3,7 @@ using App.Interfaces;
 
 namespace App.Validators
 {
-    public class PasswordValidator : IDataValidator<string>
+    public class PasswordValidator : IPasswordValidator
     {
         public bool Validate(string data)
         {

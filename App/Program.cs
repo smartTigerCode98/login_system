@@ -1,6 +1,9 @@
-﻿using System;
+﻿
 using App.Controllers;
 using App.Repositories;
+using App.Services;
+using App.Validators;
+using App.Views;
 
 namespace App
 {
@@ -8,7 +11,8 @@ namespace App
     {
         static void Main(string[] args)
         {
-            var loginController = new LoginController(new InMemoryUserRepo());
+            var service = new SignService(new InMemoryUserRepo(), new EmailValidator(), new PasswordValidator());
+            var loginController = new LoginController(service, new View());
             loginController.Run();
         }
     }
